@@ -1,0 +1,1202 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Multi-Step Form | Frontend Mentor</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      }
+
+      :root {
+        --marine-blue: hsl(213, 96%, 18%);
+        --purplish-blue: hsl(243, 100%, 62%);
+        --pastel-blue: hsl(228, 100%, 84%);
+        --light-blue: hsl(206, 94%, 87%);
+        --strawberry-red: hsl(354, 84%, 57%);
+        --cool-gray: hsl(231, 11%, 63%);
+        --light-gray: hsl(229, 24%, 87%);
+        --magnolia: hsl(217, 100%, 97%);
+        --alabaster: hsl(231, 100%, 99%);
+        --white: hsl(0, 0%, 100%);
+      }
+
+      body {
+        background-color: var(--magnolia);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        padding: 20px;
+      }
+
+      .container {
+        display: flex;
+        width: 940px;
+        height: 600px;
+        background-color: var(--white);
+        border-radius: 15px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+        padding: 16px;
+        gap: 16px;
+      }
+
+      /* Sidebar Styles */
+      .sidebar {
+        width: 274px;
+        background: var(--purplish-blue);
+        background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="274" height="568" viewBox="0 0 274 568" fill="none"><rect width="274" height="568" rx="10" fill="%23483EFF"/><mask id="mask0_0_1494" style="mask-type:alpha" maskUnits="userSpaceOnUse" x="0" y="0" width="274" height="568"><rect width="274" height="568" rx="10" fill="%23483EFF"/></mask><g mask="url(%23mask0_0_1494)"><g opacity="0.5"><circle opacity="0.1" cx="50" cy="46" r="237" fill="white"/><circle opacity="0.08" cx="-25" cy="289" r="237" fill="white"/></g></g></svg>');
+        background-repeat: no-repeat;
+        background-size: cover;
+        border-radius: 10px;
+        padding: 40px 32px;
+        color: white;
+      }
+
+      .step-item {
+        display: flex;
+        align-items: center;
+        margin-bottom: 32px;
+        cursor: pointer;
+      }
+
+      .step-number {
+        width: 33px;
+        height: 33px;
+        border: 1px solid white;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        margin-right: 16px;
+        transition: all 0.3s ease;
+      }
+
+      .step-item.active .step-number {
+        background: var(--light-blue);
+        color: var(--marine-blue);
+        border-color: var(--light-blue);
+      }
+
+      .step-label {
+        font-size: 12px;
+        color: var(--pastel-blue);
+        margin-bottom: 4px;
+      }
+
+      .step-title {
+        font-size: 14px;
+        font-weight: bold;
+        letter-spacing: 1px;
+      }
+
+      /* Content Area */
+      .content {
+        flex: 1;
+        padding: 40px 100px 40px 40px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+      }
+
+      .step-content {
+        display: none;
+      }
+
+      .step-content.active {
+        display: block;
+      }
+
+      h1 {
+        color: var(--marine-blue);
+        font-size: 32px;
+        margin-bottom: 12px;
+      }
+
+      .step-description {
+        color: var(--cool-gray);
+        margin-bottom: 40px;
+        line-height: 1.6;
+      }
+
+      /* Form Styles */
+      .form-group {
+        margin-bottom: 24px;
+        position: relative;
+      }
+
+      .form-group input {
+        width: 100%;
+        padding: 12px 16px;
+        border: 1px solid var(--light-gray);
+        border-radius: 8px;
+        font-size: 16px;
+        transition: border-color 0.3s;
+      }
+
+      .form-group input:focus {
+        outline: none;
+        border-color: var(--purplish-blue);
+      }
+
+      .form-group input.error {
+        border-color: var(--strawberry-red);
+      }
+
+      .error-message {
+        color: var(--strawberry-red);
+        font-size: 14px;
+        margin-top: 5px;
+        font-weight: 500;
+        position: absolute;
+        right: 0;
+        top: 0;
+      }
+
+      .form-group label {
+        display: block;
+        color: var(--marine-blue);
+        font-size: 14px;
+        font-weight: 500;
+        margin-bottom: 8px;
+      }
+
+      input::placeholder {
+        color: var(--cool-gray);
+      }
+
+      /* Plan Selection */
+      .plan-options {
+        display: flex;
+        gap: 18px;
+        margin-bottom: 32px;
+      }
+
+      .plan-option {
+        border: 1px solid var(--light-gray);
+        border-radius: 8px;
+        padding: 20px 16px;
+        width: 138px;
+        cursor: pointer;
+        transition: all 0.3s;
+      }
+
+      .plan-option:hover {
+        border-color: var(--purplish-blue);
+      }
+
+      .plan-option.selected {
+        border-color: var(--purplish-blue);
+        background-color: var(--magnolia);
+      }
+
+      .plan-icon {
+        margin-bottom: 40px;
+      }
+
+      .plan-name {
+        color: var(--marine-blue);
+        font-weight: bold;
+        margin-bottom: 8px;
+      }
+
+      .plan-price {
+        color: var(--cool-gray);
+        font-size: 14px;
+      }
+
+      .plan-discount {
+        color: var(--marine-blue);
+        font-size: 12px;
+        margin-top: 8px;
+      }
+
+      /* Billing Toggle */
+      .billing-toggle {
+        background-color: var(--magnolia);
+        padding: 14px;
+        border-radius: 8px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 24px;
+      }
+
+      .toggle-label {
+        color: var(--cool-gray);
+        font-weight: 500;
+        font-size: 14px;
+      }
+
+      .toggle-label.active {
+        color: var(--marine-blue);
+      }
+
+      .toggle-switch {
+        position: relative;
+        display: inline-block;
+        width: 38px;
+        height: 20px;
+      }
+
+      .toggle-switch input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+      }
+
+      .slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: var(--marine-blue);
+        transition: 0.4s;
+        border-radius: 34px;
+      }
+
+      .slider:before {
+        position: absolute;
+        content: "";
+        height: 12px;
+        width: 12px;
+        left: 4px;
+        bottom: 4px;
+        background-color: white;
+        transition: 0.4s;
+        border-radius: 50%;
+      }
+
+      input:checked + .slider:before {
+        transform: translateX(18px);
+      }
+
+      /* Add-ons */
+      .addon-option {
+        border: 1px solid var(--light-gray);
+        border-radius: 8px;
+        padding: 20px;
+        margin-bottom: 16px;
+        display: flex;
+        align-items: center;
+        cursor: pointer;
+        transition: all 0.3s;
+      }
+
+      .addon-option:hover {
+        border-color: var(--purplish-blue);
+      }
+
+      .addon-option.selected {
+        border-color: var(--purplish-blue);
+        background-color: var(--magnolia);
+      }
+
+      .addon-checkbox {
+        margin-right: 24px;
+        width: 20px;
+        height: 20px;
+        border: 1px solid var(--light-gray);
+        border-radius: 4px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+      }
+
+      .addon-option.selected .addon-checkbox {
+        background-color: var(--purplish-blue);
+        border-color: var(--purplish-blue);
+      }
+
+      .addon-details {
+        flex: 1;
+      }
+
+      .addon-name {
+        color: var(--marine-blue);
+        font-weight: bold;
+        margin-bottom: 6px;
+      }
+
+      .addon-description {
+        color: var(--cool-gray);
+        font-size: 14px;
+      }
+
+      .addon-price {
+        color: var(--purplish-blue);
+        font-size: 14px;
+      }
+
+      /* Summary */
+      .summary-container {
+        background-color: var(--magnolia);
+        border-radius: 8px;
+        padding: 24px;
+      }
+
+      .summary-plan {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding-bottom: 24px;
+        border-bottom: 1px solid var(--light-gray);
+        margin-bottom: 16px;
+      }
+
+      .plan-summary-name {
+        color: var(--marine-blue);
+        font-weight: bold;
+        margin-bottom: 8px;
+      }
+
+      .change-plan {
+        color: var(--cool-gray);
+        text-decoration: underline;
+        font-size: 14px;
+        cursor: pointer;
+      }
+
+      .plan-summary-price {
+        color: var(--marine-blue);
+        font-weight: bold;
+      }
+
+      .summary-addons {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+      }
+
+      .summary-addon {
+        display: flex;
+        justify-content: space-between;
+      }
+
+      .addon-summary-name {
+        color: var(--cool-gray);
+        font-size: 14px;
+      }
+
+      .addon-summary-price {
+        color: var(--marine-blue);
+        font-size: 14px;
+      }
+
+      .summary-total {
+        display: flex;
+        justify-content: space-between;
+        padding: 24px;
+      }
+
+      .total-label {
+        color: var(--cool-gray);
+        font-size: 14px;
+      }
+
+      .total-price {
+        color: var(--purplish-blue);
+        font-weight: bold;
+        font-size: 20px;
+      }
+
+      /* Navigation Buttons */
+      .navigation-buttons {
+        display: flex;
+        justify-content: space-between;
+        margin-top: auto;
+      }
+
+      .btn {
+        padding: 14px 24px;
+        border: none;
+        border-radius: 8px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: background-color 0.3s;
+      }
+
+      .btn-back {
+        background: none;
+        color: var(--cool-gray);
+      }
+
+      .btn-back:hover {
+        color: var(--marine-blue);
+      }
+
+      .btn-next {
+        background-color: var(--marine-blue);
+        color: white;
+      }
+
+      .btn-next:hover {
+        background-color: hsl(213, 72%, 25%);
+      }
+
+      .btn-confirm {
+        background-color: var(--purplish-blue);
+        color: white;
+      }
+
+      .btn-confirm:hover {
+        background-color: hsl(243, 100%, 77%);
+      }
+
+      /* Success Step */
+      .success-step {
+        text-align: center;
+        padding: 80px 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100%;
+      }
+
+      .success-icon {
+        width: 80px;
+        height: 80px;
+        background-color: var(--purplish-blue);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 32px;
+        color: white;
+        font-size: 40px;
+      }
+
+      .success-title {
+        color: var(--marine-blue);
+        font-size: 32px;
+        margin-bottom: 16px;
+      }
+
+      .success-message {
+        color: var(--cool-gray);
+        line-height: 1.6;
+        max-width: 450px;
+      }
+
+      /* Mobile Styles */
+      @media (max-width: 768px) {
+        body {
+          padding: 0;
+          align-items: flex-start;
+          background-color: var(--magnolia);
+        }
+
+        .container {
+          flex-direction: column;
+          width: 100%;
+          height: auto;
+          border-radius: 0;
+          padding: 0;
+          gap: 0;
+          box-shadow: none;
+          background: none;
+        }
+
+        .sidebar {
+          width: 100%;
+          border-radius: 0;
+          background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="375" height="172" viewBox="0 0 375 172" fill="none"><rect width="375" height="172" fill="%23483EFF"/><mask id="mask0_0_1273" style="mask-type:alpha" maskUnits="userSpaceOnUse" x="0" y="0" width="375" height="172"><rect width="375" height="172" fill="%23483EFF"/></mask><g mask="url(%23mask0_0_1273)"><g opacity="0.5"><circle opacity="0.1" cx="151" cy="-92" r="237" fill="white"/><circle opacity="0.08" cx="76" cy="145" r="237" fill="white"/></g></g></svg>');
+          height: 172px;
+          display: flex;
+          justify-content: center;
+          padding-top: 32px;
+        }
+
+        .step-info {
+          display: none;
+        }
+
+        .step-item {
+          margin-bottom: 0;
+          margin-right: 16px;
+        }
+
+        .content {
+          margin-left: 0;
+          margin-top: -76px;
+          border-radius: 10px;
+          padding: 32px 24px;
+          z-index: 1;
+          position: relative;
+          background: var(--white);
+          box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+          min-height: 500px;
+        }
+
+        .plan-options {
+          flex-direction: column;
+        }
+
+        .plan-option {
+          width: 100%;
+          display: flex;
+          align-items: flex-start;
+          gap: 14px;
+        }
+
+        .plan-icon {
+          margin-bottom: 0;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <!-- Sidebar -->
+      <div class="sidebar">
+        <div class="step-item active" data-step="1">
+          <div class="step-number">1</div>
+          <div class="step-info">
+            <div class="step-label">STEP 1</div>
+            <div class="step-title">YOUR INFO</div>
+          </div>
+        </div>
+        <div class="step-item" data-step="2">
+          <div class="step-number">2</div>
+          <div class="step-info">
+            <div class="step-label">STEP 2</div>
+            <div class="step-title">SELECT PLAN</div>
+          </div>
+        </div>
+        <div class="step-item" data-step="3">
+          <div class="step-number">3</div>
+          <div class="step-info">
+            <div class="step-label">STEP 3</div>
+            <div class="step-title">ADD-ONS</div>
+          </div>
+        </div>
+        <div class="step-item" data-step="4">
+          <div class="step-number">4</div>
+          <div class="step-info">
+            <div class="step-label">STEP 4</div>
+            <div class="step-title">SUMMARY</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Main Content -->
+      <div class="content">
+        <!-- Step 1: Personal Info -->
+        <div class="step-content active" id="step-1">
+          <div>
+            <h1>Personal info</h1>
+            <p class="step-description">
+              Please provide your name, email address, and phone number.
+            </p>
+
+            <div class="form-group">
+              <div
+                style="
+                  display: flex;
+                  justify-content: space-between;
+                  align-items: center;
+                  margin-bottom: 8px;
+                "
+              >
+                <label for="name">Name</label>
+              </div>
+              <input type="text" id="name" placeholder="e.g. Stephen King" />
+            </div>
+
+            <div class="form-group">
+              <div
+                style="
+                  display: flex;
+                  justify-content: space-between;
+                  align-items: center;
+                  margin-bottom: 8px;
+                "
+              >
+                <label for="email">Email Address</label>
+              </div>
+              <input
+                type="email"
+                id="email"
+                placeholder="e.g. stephenking@lorem.com"
+              />
+            </div>
+
+            <div class="form-group">
+              <div
+                style="
+                  display: flex;
+                  justify-content: space-between;
+                  align-items: center;
+                  margin-bottom: 8px;
+                "
+              >
+                <label for="phone">Phone Number</label>
+              </div>
+              <input
+                type="tel"
+                id="phone"
+                placeholder="e.g. +1 234 567 890"
+                onkeydown="restrictPhoneInput(event)"
+              />
+            </div>
+          </div>
+
+          <div class="navigation-buttons">
+            <div></div>
+            <!-- Empty div for spacing -->
+            <button class="btn btn-next" onclick="nextStep()">Next Step</button>
+          </div>
+        </div>
+
+        <!-- Step 2: Select Plan -->
+        <div class="step-content" id="step-2">
+          <div>
+            <h1>Select your plan</h1>
+            <p class="step-description">
+              You have the option of monthly or yearly billing.
+            </p>
+
+            <div class="plan-options">
+              <div class="plan-option selected" data-plan="arcade">
+                <div class="plan-icon">
+                  <i
+                    class="fas fa-gamepad"
+                    style="color: var(--purplish-blue); font-size: 36px"
+                  ></i>
+                </div>
+                <div>
+                  <div class="plan-name">Arcade</div>
+                  <div class="plan-price">$9/mo</div>
+                  <div class="plan-discount" style="display: none">
+                    2 months free
+                  </div>
+                </div>
+              </div>
+
+              <div class="plan-option" data-plan="advanced">
+                <div class="plan-icon">
+                  <i
+                    class="fas fa-desktop"
+                    style="color: var(--purplish-blue); font-size: 36px"
+                  ></i>
+                </div>
+                <div>
+                  <div class="plan-name">Advanced</div>
+                  <div class="plan-price">$12/mo</div>
+                  <div class="plan-discount" style="display: none">
+                    2 months free
+                  </div>
+                </div>
+              </div>
+
+              <div class="plan-option" data-plan="pro">
+                <div class="plan-icon">
+                  <i
+                    class="fas fa-cube"
+                    style="color: var(--purplish-blue); font-size: 36px"
+                  ></i>
+                </div>
+                <div>
+                  <div class="plan-name">Pro</div>
+                  <div class="plan-price">$15/mo</div>
+                  <div class="plan-discount" style="display: none">
+                    2 months free
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="billing-toggle">
+              <span class="toggle-label active">Monthly</span>
+              <label class="toggle-switch">
+                <input type="checkbox" id="billing-toggle" />
+                <span class="slider"></span>
+              </label>
+              <span class="toggle-label">Yearly</span>
+            </div>
+          </div>
+
+          <div class="navigation-buttons">
+            <button class="btn btn-back" onclick="prevStep()">Go Back</button>
+            <button class="btn btn-next" onclick="nextStep()">Next Step</button>
+          </div>
+        </div>
+
+        <!-- Step 3: Add-ons -->
+        <div class="step-content" id="step-3">
+          <div>
+            <h1>Pick add-ons</h1>
+            <p class="step-description">
+              Add-ons help enhance your gaming experience.
+            </p>
+
+            <div class="addon-option" data-addon="online-service">
+              <div class="addon-checkbox">
+                <i class="fas fa-check" style="display: none"></i>
+              </div>
+              <div class="addon-details">
+                <div class="addon-name">Online service</div>
+                <div class="addon-description">Access to multiplayer games</div>
+              </div>
+              <div class="addon-price">+$1/mo</div>
+            </div>
+
+            <div class="addon-option" data-addon="larger-storage">
+              <div class="addon-checkbox">
+                <i class="fas fa-check" style="display: none"></i>
+              </div>
+              <div class="addon-details">
+                <div class="addon-name">Larger storage</div>
+                <div class="addon-description">Extra 1TB of cloud save</div>
+              </div>
+              <div class="addon-price">+$2/mo</div>
+            </div>
+
+            <div class="addon-option" data-addon="customizable-profile">
+              <div class="addon-checkbox">
+                <i class="fas fa-check" style="display: none"></i>
+              </div>
+              <div class="addon-details">
+                <div class="addon-name">Customizable Profile</div>
+                <div class="addon-description">
+                  Custom theme on your profile
+                </div>
+              </div>
+              <div class="addon-price">+$2/mo</div>
+            </div>
+          </div>
+
+          <div class="navigation-buttons">
+            <button class="btn btn-back" onclick="prevStep()">Go Back</button>
+            <button class="btn btn-next" onclick="nextStep()">Next Step</button>
+          </div>
+        </div>
+
+        <!-- Step 4: Summary -->
+        <div class="step-content" id="step-4">
+          <div>
+            <h1>Finishing up</h1>
+            <p class="step-description">
+              Double-check everything looks OK before confirming.
+            </p>
+
+            <div class="summary-container">
+              <div class="summary-plan">
+                <div>
+                  <div class="plan-summary-name">Arcade (Monthly)</div>
+                  <div class="change-plan" onclick="goToStep(2)">Change</div>
+                </div>
+                <div class="plan-summary-price">$9/mo</div>
+              </div>
+
+              <div class="summary-addons">
+                <!-- Add-ons will be dynamically added here -->
+              </div>
+            </div>
+
+            <div class="summary-total">
+              <div class="total-label">Total (per month)</div>
+              <div class="total-price">$12/mo</div>
+            </div>
+          </div>
+
+          <div class="navigation-buttons">
+            <button class="btn btn-back" onclick="prevStep()">Go Back</button>
+            <button class="btn btn-confirm" onclick="confirmSubscription()">
+              Confirm
+            </button>
+          </div>
+        </div>
+
+        <!-- Success Step -->
+        <div class="step-content" id="step-success">
+          <div class="success-step">
+            <div class="success-icon">
+              <i class="fas fa-check"></i>
+            </div>
+            <h1 class="success-title">Thank you!</h1>
+            <p class="success-message">
+              Thanks for confirming your subscription! We hope you have fun
+              using our platform. If you ever need support, please feel free to
+              email us at support@loremgaming.com.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // Current step tracking
+      let currentStep = 1;
+      const totalSteps = 4;
+
+      // Form data
+      const formData = {
+        personalInfo: {
+          name: "",
+          email: "",
+          phone: "",
+        },
+        selectedPlan: {
+          type: "arcade",
+          billing: "monthly",
+        },
+        addOns: {
+          "online-service": false,
+          "larger-storage": false,
+          "customizable-profile": false,
+        },
+      };
+
+      // Initialize the form
+      document.addEventListener("DOMContentLoaded", function () {
+        // Set up plan selection
+        const planOptions = document.querySelectorAll(".plan-option");
+        planOptions.forEach((option) => {
+          option.addEventListener("click", function () {
+            planOptions.forEach((opt) => opt.classList.remove("selected"));
+            this.classList.add("selected");
+            formData.selectedPlan.type = this.getAttribute("data-plan");
+            updateSummary();
+          });
+        });
+
+        // Set up billing toggle
+        const billingToggle = document.getElementById("billing-toggle");
+        billingToggle.addEventListener("change", function () {
+          const monthlyLabels = document.querySelectorAll(".toggle-label");
+          monthlyLabels.forEach((label) => label.classList.toggle("active"));
+
+          formData.selectedPlan.billing = this.checked ? "yearly" : "monthly";
+          updatePlanPrices();
+          updateAddonPrices();
+          updateSummary();
+        });
+
+        // Set up add-on selection
+        const addonOptions = document.querySelectorAll(".addon-option");
+        addonOptions.forEach((option) => {
+          option.addEventListener("click", function () {
+            this.classList.toggle("selected");
+            const addonId = this.getAttribute("data-addon");
+            const isSelected = this.classList.contains("selected");
+
+            // Update checkbox icon
+            const checkIcon = this.querySelector(".fa-check");
+            checkIcon.style.display = isSelected ? "block" : "none";
+
+            // Update form data
+            formData.addOns[addonId] = isSelected;
+            updateSummary();
+          });
+        });
+      });
+
+      // Validation functions for Step 1
+      function validateStep1() {
+        const name = document.getElementById("name").value.trim();
+        const email = document.getElementById("email").value.trim();
+        const phone = document.getElementById("phone").value.trim();
+
+        let isValid = true;
+
+        // Validate name
+        if (name === "") {
+          showError("name", "This field is required");
+          isValid = false;
+        } else {
+          hideError("name");
+        }
+
+        // Validate email
+        if (email === "") {
+          showError("email", "This field is required");
+          isValid = false;
+        } else if (!isValidEmail(email)) {
+          showError("email", "Please enter a valid email");
+          isValid = false;
+        } else {
+          hideError("email");
+        }
+
+        // Validate phone
+        if (phone === "") {
+          showError("phone", "This field is required");
+          isValid = false;
+        } else if (!isValidPhone(phone)) {
+          showError("phone", "Please enter a valid phone number");
+          isValid = false;
+        } else {
+          hideError("phone");
+        }
+
+        return isValid;
+      }
+
+      function isValidEmail(email) {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return emailRegex.test(email);
+      }
+
+      function isValidPhone(phone) {
+        // Allow numbers, spaces, +, -, and ()
+        const phoneRegex = /^[\d\s+\-()]+$/;
+        return phoneRegex.test(phone);
+      }
+
+      function showError(fieldId, message) {
+        const field = document.getElementById(fieldId);
+        const formGroup = field.closest(".form-group");
+
+        // Remove existing error
+        const existingError = formGroup.querySelector(".error-message");
+        if (existingError) {
+          existingError.remove();
+        }
+
+        // Add error styling
+        field.style.borderColor = "var(--strawberry-red)";
+
+        // Create and show error message
+        const errorElement = document.createElement("div");
+        errorElement.className = "error-message";
+        errorElement.textContent = message;
+        errorElement.style.cssText = `
+                color: var(--strawberry-red);
+                font-size: 14px;
+                margin-top: 5px;
+                font-weight: 500;
+            `;
+
+        formGroup.appendChild(errorElement);
+      }
+
+      function hideError(fieldId) {
+        const field = document.getElementById(fieldId);
+        const formGroup = field.closest(".form-group");
+
+        // Remove error styling
+        field.style.borderColor = "var(--light-gray)";
+
+        // Remove error message
+        const errorElement = formGroup.querySelector(".error-message");
+        if (errorElement) {
+          errorElement.remove();
+        }
+      }
+
+      // Phone number input restriction
+      function restrictPhoneInput(event) {
+        const key = event.key;
+
+        // Allow: backspace, delete, tab, escape, enter
+        if (
+          [8, 9, 13, 27].includes(event.keyCode) ||
+          // Allow: Ctrl+A, Ctrl+C, Ctrl+V, Ctrl+X
+          (event.ctrlKey && [65, 67, 86, 88].includes(event.keyCode))
+        ) {
+          return;
+        }
+
+        // Allow: numbers and these special characters: +, -, (, ), space
+        if (!/[0-9+\-() ]/.test(key)) {
+          event.preventDefault();
+        }
+      }
+
+      // Navigation functions
+      function nextStep() {
+        if (currentStep === 1) {
+          if (!validateStep1()) {
+            return; // Don't proceed if validation fails
+          }
+        }
+
+        if (currentStep < totalSteps) {
+          goToStep(currentStep + 1);
+        }
+      }
+
+      function prevStep() {
+        if (currentStep > 1) {
+          goToStep(currentStep - 1);
+        }
+      }
+
+      function goToStep(step) {
+        // Hide current step
+        document
+          .getElementById(`step-${currentStep}`)
+          .classList.remove("active");
+        document
+          .querySelector(`.step-item[data-step="${currentStep}"]`)
+          .classList.remove("active");
+
+        // Show new step
+        document.getElementById(`step-${step}`).classList.add("active");
+        document
+          .querySelector(`.step-item[data-step="${step}"]`)
+          .classList.add("active");
+
+        currentStep = step;
+      }
+
+      function confirmSubscription() {
+        // Hide current step
+        document
+          .getElementById(`step-${currentStep}`)
+          .classList.remove("active");
+        document
+          .querySelector(`.step-item[data-step="${currentStep}"]`)
+          .classList.remove("active");
+
+        // Show success step
+        document.getElementById("step-success").classList.add("active");
+      }
+
+      // Update plan prices based on billing cycle
+      function updatePlanPrices() {
+        const isYearly = formData.selectedPlan.billing === "yearly";
+        const multiplier = isYearly ? 10 : 1;
+        const period = isYearly ? "/yr" : "/mo";
+
+        // Update Arcade price
+        document.querySelector(
+          '[data-plan="arcade"] .plan-price'
+        ).textContent = `$${9 * multiplier}${period}`;
+
+        // Update Advanced price
+        document.querySelector(
+          '[data-plan="advanced"] .plan-price'
+        ).textContent = `$${12 * multiplier}${period}`;
+
+        // Update Pro price
+        document.querySelector(
+          '[data-plan="pro"] .plan-price'
+        ).textContent = `$${15 * multiplier}${period}`;
+
+        // Show/hide discount text
+        const discountTexts = document.querySelectorAll(".plan-discount");
+        discountTexts.forEach((text) => {
+          text.style.display = isYearly ? "block" : "none";
+        });
+      }
+
+      // Update add-on prices based on billing cycle
+      function updateAddonPrices() {
+        const isYearly = formData.selectedPlan.billing === "yearly";
+        const multiplier = isYearly ? 10 : 1;
+        const period = isYearly ? "/yr" : "/mo";
+
+        // Update Online Service price
+        document.querySelector(
+          '[data-addon="online-service"] .addon-price'
+        ).textContent = `+$${1 * multiplier}${period}`;
+
+        // Update Larger Storage price
+        document.querySelector(
+          '[data-addon="larger-storage"] .addon-price'
+        ).textContent = `+$${2 * multiplier}${period}`;
+
+        // Update Customizable Profile price
+        document.querySelector(
+          '[data-addon="customizable-profile"] .addon-price'
+        ).textContent = `+$${2 * multiplier}${period}`;
+      }
+
+      // Update summary section
+      function updateSummary() {
+        const isYearly = formData.selectedPlan.billing === "yearly";
+        const period = isYearly ? "/yr" : "/mo";
+        const periodText = isYearly ? "Yearly" : "Monthly";
+
+        // Plan details
+        const planName =
+          formData.selectedPlan.type.charAt(0).toUpperCase() +
+          formData.selectedPlan.type.slice(1);
+        document.querySelector(
+          ".plan-summary-name"
+        ).textContent = `${planName} (${periodText})`;
+
+        // Plan price
+        const planPrices = {
+          arcade: isYearly ? 90 : 9,
+          advanced: isYearly ? 120 : 12,
+          pro: isYearly ? 150 : 15,
+        };
+        document.querySelector(".plan-summary-price").textContent = `$${
+          planPrices[formData.selectedPlan.type]
+        }${period}`;
+
+        // Add-ons
+        const summaryAddons = document.querySelector(".summary-addons");
+        summaryAddons.innerHTML = "";
+
+        let total = planPrices[formData.selectedPlan.type];
+
+        // Online Service
+        if (formData.addOns["online-service"]) {
+          const price = isYearly ? 10 : 1;
+          total += price;
+
+          const addonElement = document.createElement("div");
+          addonElement.className = "summary-addon";
+          addonElement.innerHTML = `
+                    <div class="addon-summary-name">Online service</div>
+                    <div class="addon-summary-price">+$${price}${period}</div>
+                `;
+          summaryAddons.appendChild(addonElement);
+        }
+
+        // Larger Storage
+        if (formData.addOns["larger-storage"]) {
+          const price = isYearly ? 20 : 2;
+          total += price;
+
+          const addonElement = document.createElement("div");
+          addonElement.className = "summary-addon";
+          addonElement.innerHTML = `
+                    <div class="addon-summary-name">Larger storage</div>
+                    <div class="addon-summary-price">+$${price}${period}</div>
+                `;
+          summaryAddons.appendChild(addonElement);
+        }
+
+        // Customizable Profile
+        if (formData.addOns["customizable-profile"]) {
+          const price = isYearly ? 20 : 2;
+          total += price;
+
+          const addonElement = document.createElement("div");
+          addonElement.className = "summary-addon";
+          addonElement.innerHTML = `
+                    <div class="addon-summary-name">Customizable Profile</div>
+                    <div class="addon-summary-price">+$${price}${period}</div>
+                `;
+          summaryAddons.appendChild(addonElement);
+        }
+
+        // Update total
+        document.querySelector(".total-label").textContent = `Total (per ${
+          isYearly ? "year" : "month"
+        })`;
+        document.querySelector(
+          ".total-price"
+        ).textContent = `$${total}${period}`;
+      }
+    </script>
+  </body>
+</html>
