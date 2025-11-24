@@ -10,7 +10,7 @@ A responsive multi-step form built with HTML, CSS, and JavaScript.
 - Modern UI
 
 ## Live Demo
-[View Live Site](https://lolo1234s.github.io/multi-step-form/)
+[View Live Site](https://lolo1234s.github.io/multi-step-form/multi-step-form.html)
 
 ## Technologies Used
 - HTML5
