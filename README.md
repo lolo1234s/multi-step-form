@@ -1,2 +1,25 @@
-# multi-step-form
-A responsive multi-step form with validation built with HTML, CSS, and JavaScript. Frontend Mentor challenge solution.
+# Multi-Step Form
+
+A responsive multi-step form built with HTML, CSS, and JavaScript.
+
+## Features
+- Step-by-step form navigation
+- Form validation with error messages
+- Phone number input restriction
+- Responsive design
+- Modern UI
+
+## Live Demo
+[View Live Site](https://your-username.github.io/multi-step-form/multi-step-form.html)
+
+## Technologies Used
+- HTML5
+- CSS3
+- JavaScript (Vanilla)
+
+## Project Structure
+```
+multi-step-form/
+├── multi-step-form.html
+└── README.md
+```
